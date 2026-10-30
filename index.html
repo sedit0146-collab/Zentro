@@ -1,0 +1,168 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#101b35">
+<title>Zentro - Free Online Tools</title>
+<meta name="description" content="Discover free, fast and easy online tools. Calculate, convert and create with Zentro.">
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:#f5f7fc;color:#17233d}
+header{background:#101b35;color:white;padding:22px 6%;display:flex;justify-content:space-between;align-items:center}
+.logo{font-size:27px;font-weight:800;letter-spacing:2px}
+.logo span{color:#83e6c1}
+header a{color:white;text-decoration:none}
+.hero{text-align:center;padding:55px 18px 35px;background:#101b35;color:white}
+.hero h1{font-size:36px;margin:0 0 12px}
+.hero p{color:#c5d2e6}
+.search{width:100%;max-width:520px;padding:16px;border:0;border-radius:12px;font-size:16px;margin-top:18px}
+main{max-width:1050px;margin:auto;padding:30px 18px}
+h2{margin-bottom:8px}
+.subtitle{color:#6b7890;margin-top:0}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:17px;margin-top:24px}
+.card{background:white;border:1px solid #e7eaf1;border-radius:15px;padding:20px;box-shadow:0 3px 12px #17233d08}
+.card h3{margin:5px 0 10px}
+.card p{color:#6b7890;font-size:14px}
+.emoji{font-size:28px}
+input,textarea,select{width:100%;padding:12px;margin:7px 0;border:1px solid #dce2ed;border-radius:9px;font-size:15px}
+button{background:#176bba;color:white;border:0;border-radius:9px;padding:12px 16px;font-size:15px;cursor:pointer;width:100%;margin-top:7px}
+button:hover{background:#10548f}
+.result{margin-top:12px;padding:12px;background:#e9f8f2;color:#126b4b;border-radius:9px;min-height:42px;overflow-wrap:anywhere}
+footer{text-align:center;background:#101b35;color:#c5d2e6;padding:28px;margin-top:35px}
+.hidden{display:none}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">ZENTRO<span>.</span></div>
+  <a href="#tools">Explore Tools ↓</a>
+</header>
+
+<section class="hero">
+  <h1>Everything useful. One place.</h1>
+  <p>Free online tools to make your everyday life easier.</p>
+  <input class="search" id="search" placeholder="🔍 Search for a tool..." oninput="filterTools()">
+</section>
+
+<main id="tools">
+  <h2>Explore Our Tools</h2>
+  <p class="subtitle">Simple, fast and free tools for everyone.</p>
+
+  <div class="grid" id="toolGrid">
+
+    <section class="card" data-name="calculator math">
+      <div class="emoji">🧮</div>
+      <h3>Calculator</h3>
+      <p>Perform basic mathematical calculations.</p>
+      <input id="calcInput" placeholder="Example: 25+15*2">
+      <button onclick="calculate()">Calculate</button>
+      <div class="result" id="calcResult">Your answer appears here.</div>
+    </section>
+
+    <section class="card" data-name="age birthday date">
+      <div class="emoji">🎂</div>
+      <h3>Age Calculator</h3>
+      <p>Calculate your age from your birth date.</p>
+      <input type="date" id="birth">
+      <button onclick="ageCalc()">Calculate Age</button>
+      <div class="result" id="ageResult">Your age appears here.</div>
+    </section>
+
+    <section class="card" data-name="word counter writing text character">
+      <div class="emoji">📝</div>
+      <h3>Word Counter</h3>
+      <p>Count words and characters in your text.</p>
+      <textarea id="words" rows="4" placeholder="Type or paste your text..." oninput="countWords()"></textarea>
+      <div class="result" id="wordResult">Words: 0 | Characters: 0</div>
+    </section>
+
+    <section class="card" data-name="percentage percent">
+      <div class="emoji">📊</div>
+      <h3>Percentage Calculator</h3>
+      <p>Find a percentage of any number.</p>
+      <input type="number" id="percent" placeholder="Percentage (%)">
+      <input type="number" id="number" placeholder="Number">
+      <button onclick="percentage()">Calculate</button>
+      <div class="result" id="percentResult">Your answer appears here.</div>
+    </section>
+
+  </div>
+  <p id="noResults" class="hidden">No matching tools found.</p>
+</main>
+
+<footer>
+  <div class="logo">ZENTRO<span>.</span></div>
+  <p>Everything useful. One place.</p>
+  <p>© 2026 Zentro. All rights reserved.</p>
+</footer>
+
+<script>
+function calculate(){
+ const value=document.getElementById('calcInput').value.trim();
+ const output=document.getElementById('calcResult');
+ if(!value || !/^[0-9+\-*/().%\s]+$/.test(value)){
+   output.textContent='Please enter a valid mathematical expression.';
+   return;
+ }
+ try{
+   const result=Function('"use strict";return ('+value+')')();
+   output.textContent=Number.isFinite(result)?'Answer: '+result:'Invalid calculation.';
+ }catch(e){
+   output.textContent='Invalid expression.';
+ }
+}
+
+function ageCalc(){
+ const input=document.getElementById('birth').value;
+ const output=document.getElementById('ageResult');
+ if(!input){output.textContent='Please select your birth date.';return;}
+ const birth=new Date(input+'T00:00:00');
+ const today=new Date();
+ if(birth>today){output.textContent='Birth date cannot be in the future.';return;}
+ let years=today.getFullYear()-birth.getFullYear();
+ let months=today.getMonth()-birth.getMonth();
+ let days=today.getDate()-birth.getDate();
+ if(days<0){
+   months--;
+   days+=new Date(today.getFullYear(),today.getMonth(),0).getDate();
+ }
+ if(months<0){years--;months+=12;}
+ output.textContent=years+' years, '+months+' months, '+days+' days';
+}
+
+function countWords(){
+ const text=document.getElementById('words').value;
+ const words=text.trim()?text.trim().split(/\s+/).length:0;
+ document.getElementById('wordResult').textContent=
+ 'Words: '+words+' | Characters: '+text.length;
+}
+
+function percentage(){
+ const p=Number(document.getElementById('percent').value);
+ const n=Number(document.getElementById('number').value);
+ const output=document.getElementById('percentResult');
+ if(document.getElementById('percent').value==='' ||
+    document.getElementById('number').value===''){
+   output.textContent='Please enter both numbers.';
+   return;
+ }
+ output.textContent='Answer: '+(p*n/100);
+}
+
+function filterTools(){
+ const query=document.getElementById('search').value.toLowerCase();
+ const cards=document.querySelectorAll('.card');
+ let count=0;
+ cards.forEach(card=>{
+   const match=(card.dataset.name+' '+card.innerText).toLowerCase().includes(query);
+   card.classList.toggle('hidden',!match);
+   if(match)count++;
+ });
+ document.getElementById('noResults').classList.toggle('hidden',count>0);
+}
+</script>
+</body>
+</html>
